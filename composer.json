@@ -1,0 +1,15 @@
+{
+    "name": "sywlwl/bin-tool",
+    "autoload": {
+        "psr-4": {
+            "Sywlwl\\BinTool\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "wayhood",
+            "email": "wayhood@163.com"
+        }
+    ],
+    "require": {}
+}
