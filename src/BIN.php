@@ -7,14 +7,23 @@ namespace Sywlwl\BinTool;
  */
 class BIN
 {
+    public static function wrappedReader($bin): Reader
+    {
+        return new Reader($bin);
+    }
+
+    public static function newWriter(): Writer
+    {
+        return new Writer();
+    }
 
     /**
      * 打印
      * @param $bin
-     * @param $out
+     * @param bool $out
      * @return string|void
      */
-    public static function dump($bin, $out = true)
+    public static function dump($bin, bool $out = true)
     {
         $ret = [];
         for ($i = 0; $i < strlen($bin); $i++) {
@@ -32,7 +41,7 @@ class BIN
      * 判断平台是大端还是小端
      * @return bool
      */
-    public static function isLE()
+    public static function isLE(): bool
     {
         $bin = pack("s", 1);
         if (bin2hex($bin[0]) != '00') {
@@ -44,7 +53,7 @@ class BIN
     }
 
     // long 8位
-    public static function bin2Long($bin)
+    public static function bin2Long($bin): int
     {
         if (strlen($bin) != 8) {
             return 0;
@@ -61,7 +70,7 @@ class BIN
     }
 
     // 将long 转为 二进制
-    public static function long2Bin($long)
+    public static function long2Bin($long): string
     {
         $b = [];
         $b[] = chr($long & 0xff);
@@ -76,15 +85,13 @@ class BIN
     }
 
 
-    public static function bin2LongLE($bin)
+    public static function bin2LongLE($bin): int
     {
         if (strlen($bin) != 8) {
             return 0;
         }
-        $ret = unpack("v*", $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
-
-        return ((ord($bin[0]) & 0xff) << 0)
+        return
+            ((ord($bin[0]) & 0xff) << 0)
             | ((ord($bin[1]) & 0xff) << 8)
             | ((ord($bin[2]) & 0xff) << 16)
             | ((ord($bin[3]) & 0xff) << 24)
@@ -95,7 +102,7 @@ class BIN
     }
 
     // 将int 转为 二进制
-    public static function long2BinLE($long)
+    public static function long2BinLE($long): string
     {
         $b = [];
         $b[] = chr($long & 0xff);
@@ -119,14 +126,13 @@ class BIN
             return 0;
         }
         $ret = unpack("N*", $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
+        return $ret[1] ?? 0;
     }
 
     // 将int 转为 二进制
     public static function int2Bin($int)
     {
-        $bin = pack('N', $int);
-        return $bin;
+        return pack('N', $int);
     }
 
     public static function bin2IntLE($bin)
@@ -135,14 +141,13 @@ class BIN
             return 0;
         }
         $ret = unpack("V*", $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
+        return $ret[1] ?? 0;
     }
 
     // 将int 转为 二进制
     public static function int2BinLE($int)
     {
-        $bin = pack('V', $int);
-        return $bin;
+        return pack('V', $int);
     }
 
     // short 2位
@@ -153,14 +158,13 @@ class BIN
             return 0;
         }
         $ret = unpack("n*", $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
+        return $ret[1] ?? 0;
     }
 
     // 将int 转为 二进制
     public static function short2Bin($short)
     {
-        $bin = pack('n', $short);
-        return $bin;
+        return pack('n', $short);
     }
 
     public static function bin2ShortLE($bin)
@@ -169,14 +173,13 @@ class BIN
             return 0;
         }
         $ret = unpack("v*", $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
+        return $ret[1] ?? 0;
     }
 
     // 将int 转为 二进制
     public static function short2BinLE($short)
     {
-        $bin = pack('v', $short);
-        return $bin;
+        return pack('v', $short);
     }
 
     // float
@@ -186,7 +189,7 @@ class BIN
             $bin = strrev($bin);
         }
         $ret = unpack('f*', $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
+        return $ret[1] ?? 0;
     }
 
 
@@ -206,7 +209,7 @@ class BIN
             $bin = strrev($bin);
         }
         $ret = unpack('f*', $bin);
-        return isset($ret[1]) ? $ret[1] : 0;
+        return $ret[1] ?? 0;
     }
 
     public static function float2BinLE($float)

@@ -8,13 +8,13 @@ class BCD
     /**
      * 二进制转bcd吗，支持过滤00位
      * @param $bin
-     * @param $split
+     * @param bool $split
      * @return string
      */
-    public static function bin2Bcd($bin, $split = false)
+    public static function bin2Bcd($bin, bool $split = false): string
     {
         $ret = [];
-        if ($split == true) {
+        if ($split) {
             $stop = false;
             for ($i = strlen($bin) - 1; $i >= 0; $i--) {
                 if ($stop == false && bin2hex($bin[$i]) == '00') {
@@ -36,10 +36,10 @@ class BCD
     /**
      * bcd码转二进制， 支持补零
      * @param $bcd
-     * @param $pad
+     * @param int $pad
      * @return string
      */
-    public static function bcd2Bin($bcd, $pad = 0)
+    public static function bcd2Bin($bcd, int $pad = 0): string
     {
         //如果不够偶数，补0
         if (strlen($bcd) > 0 && strlen($bcd) % 2 != 0) {
