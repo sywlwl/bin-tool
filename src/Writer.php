@@ -8,11 +8,15 @@ class Writer
 
     private int $index = 0;
 
-    public function dump() {
-        BIN::dump($this->bin);
+    public function dump(bool $out = true) {
+        if ($out) {
+            BIN::dump($this->bin);
+        } else {
+            return BIN::dump($this->bin, false);
+        }
     }
 
-    public function bin(): string
+    public function getBin(): string
     {
         return $this->bin;
     }
@@ -32,7 +36,7 @@ class Writer
     public function writeBin($bin): Writer
     {
         $this->bin .= $bin;
-        $this->index++;
+        $this->index = $this->index + strlen($bin);
         return $this;
     }
 

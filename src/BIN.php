@@ -7,11 +7,20 @@ namespace Sywlwl\BinTool;
  */
 class BIN
 {
+    /**
+     * 包装二进制数据，为reader
+     * @param $bin
+     * @return Reader
+     */
     public static function wrappedReader($bin): Reader
     {
         return new Reader($bin);
     }
 
+    /**
+     * 创建一个二进制writer
+     * @return Writer
+     */
     public static function newWriter(): Writer
     {
         return new Writer();
@@ -36,6 +45,11 @@ class BIN
         }
     }
 
+    public static function bin2Bits(string $bin): string
+    {
+        $bin = $bin[0];
+        return str_pad(decbin(ord($bin)), 8, '0', STR_PAD_LEFT);
+    }
 
     /**
      * 判断平台是大端还是小端

@@ -2,7 +2,7 @@
 
 namespace Sywlwl\BinTool;
 
-class Cp56Time2a
+class CP56Time2A
 {
     public static function bin2Date($bin)
     {

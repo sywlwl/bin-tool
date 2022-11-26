@@ -4,13 +4,13 @@ require '../vendor/autoload.php';
 
 use Sywlwl\BinTool\BCD;
 use Sywlwl\BinTool\BIN;
-use Sywlwl\BinTool\Cp56Time2a;
+use Sywlwl\BinTool\CP56Time2A;
 
 //// cp56time2a
 //$date = "2022-11-11 23:50:50";
-//$bin = Cp56Time2a::date2Bin($date);
+//$bin = CP56Time2A::date2Bin($date);
 //BIN::dump($bin);
-//echo Cp56Time2a::bin2Date($bin), "\n";
+//echo CP56Time2A::bin2Date($bin), "\n";
 //
 //// BIN 大小端
 //
@@ -34,7 +34,7 @@ $bin = BCD::bcd2Bin(str_replace(' ', '', $bcd));
 
 $reader = BIN::wrappedReader($bin);
 
-$b = $reader->readBin(); // 读取1位;
+$b = $reader->readSlice(1); // 读取1位;
 BIN::dump($b);
 
 $length = $reader->readChar();
