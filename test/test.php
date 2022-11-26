@@ -4,7 +4,7 @@ require '../vendor/autoload.php';
 
 use Sywlwl\BinTool\BCD;
 use Sywlwl\BinTool\BIN;
-use Sywlwl\BinTool\CP56Time2A;
+use Sywlwl\BinTool\CP56Time2a;
 
 //// cp56time2a
 //$date = "2022-11-11 23:50:50";
