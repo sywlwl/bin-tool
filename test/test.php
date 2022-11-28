@@ -7,10 +7,11 @@ use Sywlwl\BinTool\BIN;
 use Sywlwl\BinTool\CP56Time2a;
 
 //// cp56time2a
-//$date = "2022-11-11 23:50:50";
-//$bin = CP56Time2A::date2Bin($date);
-//BIN::dump($bin);
-//echo CP56Time2A::bin2Date($bin), "\n";
+$date = "2022-11-28 16:03:40.234";
+echo $date, "\n";
+$bin = CP56Time2A::date2Bin($date);
+BIN::dump($bin);
+echo CP56Time2A::bin2Date($bin), "\n";
 //
 //// BIN 大小端
 //
@@ -29,31 +30,38 @@ use Sywlwl\BinTool\CP56Time2a;
 //BIN::dump($bin);
 //echo BIN::bin2IntLE($bin), "\n";
 
-$bcd = "68 0D 1F 0A 00 04 56 37 31 12 21 35 47 01 00 C4 17";
-$bin = BCD::bcd2Bin(str_replace(' ', '', $bcd));
+//$bcd = "68 0D 1F 0A 00 04 56 37 31 12 21 35 47 01 00 C4 17";
+//$bin = BCD::bcd2Bin(str_replace(' ', '', $bcd));
 
-$reader = BIN::wrappedReader($bin);
+//$b = "00000000C10A2DF7";
+//$bb = BCD::bcd2Bin("00000000C10A2DF7");
+//
+//echo BIN::bin2IntLE(BCD::bcd2Bin("10270000")), "\n";
 
-$b = $reader->readSlice(1); // 读取1位;
-BIN::dump($b);
-
-$length = $reader->readChar();
-echo $length, "\n";
-
-echo $reader->readHex(), "\n";
-
-$seq = $reader->readInt();
-echo $seq, "\n";
-BIN::dump($bin);
-$bcd = BCD::bin2Bcd($bin, true);
-echo $bcd, "\n";
-
-$writer = BIN::newWriter();
-// 68 0D 1F 0A 00 04 56 37 31 12 21 35 47 01 00 C4 17
-$writer->writeHex("68")
-    ->writeChar(13)
-    ->writeHex('1F')
-    ->writeInt(167773270)->writeLongLE(3338);
-//->dump();
-
-echo $writer, "\n";
+//
+//
+//$reader = BIN::wrappedReader($bin);
+//
+//$b = $reader->readSlice(1); // 读取1位;
+//BIN::dump($b);
+//
+//$length = $reader->readChar();
+//echo $length, "\n";
+//
+//echo $reader->readHex(), "\n";
+//
+//$seq = $reader->readInt();
+//echo $seq, "\n";
+//BIN::dump($bin);
+//$bcd = BCD::bin2Bcd($bin, true);
+//echo $bcd, "\n";
+//
+//$writer = BIN::newWriter();
+//// 68 0D 1F 0A 00 04 56 37 31 12 21 35 47 01 00 C4 17
+//$writer->writeHex("68")
+//    ->writeChar(13)
+//    ->writeHex('1F')
+//    ->writeInt(167773270)->writeLongLE(3338);
+////->dump();
+//
+//echo $writer, "\n";

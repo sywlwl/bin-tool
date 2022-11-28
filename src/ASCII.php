@@ -8,7 +8,7 @@ class ASCII
     {
         $ret = '';
         for($i = 0; $i< strlen($bin); $i++) {
-            if (chr($bin[$i]) > 31 && chr($bin[$i]) < 127) { // 可现显示字符
+            if (ord($bin[$i]) > 31 && ord($bin[$i]) < 127) { // 可现显示字符
                 $ret .= $bin[$i];
             }
         }
