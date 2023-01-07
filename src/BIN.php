@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * ___.   .__                   __                .__
+ * \_ |__ |__| ____           _/  |_  ____   ____ |  |
+ *  | __ \|  |/    \   ______ \   __\/  _ \ /  _ \|  |
+ *  | \_\ \  |   |  \ /_____/  |  | (  <_> |  <_> )  |__
+ *  |___  /__|___|  /          |__|  \____/ \____/|____/
+ *      \/        \/
+ */
 namespace Sywlwl\BinTool;
 
 /**
- * 二进制处理
+ * 二进制处理.
  */
 class BIN
 {
     /**
-     * 包装二进制数据，为reader
-     * @param $bin
-     * @return Reader
+     * 包装二进制数据，为reader.
      */
     public static function wrappedReader($bin): Reader
     {
@@ -18,8 +25,7 @@ class BIN
     }
 
     /**
-     * 创建一个二进制writer
-     * @return Writer
+     * 创建一个二进制writer.
      */
     public static function newWriter(): Writer
     {
@@ -27,212 +33,258 @@ class BIN
     }
 
     /**
-     * 打印
-     * @param $bin
-     * @param bool $out
+     * 1位数字转二进制位.
+     * @param mixed $padLength
+     */
+    public static function char2Bits(int $i, $padLength = 0): string
+    {
+        if ($padLength) {
+            return str_pad(decbin($i), $padLength, '0', STR_PAD_LEFT);
+        }
+        return decbin($i);
+    }
+
+    /**
+     * 二进制位转数字.
+     */
+    public static function bits2Char(string $bits): int
+    {
+        return intval(base_convert($bits, 2, 10));
+    }
+
+    /**
+     * 打印.
      * @return string|void
      */
-    public static function dump($bin, bool $out = true)
+    public static function dump(string $bin, bool $out = true, string $sperator = ' ')
     {
         $ret = [];
-        for ($i = 0; $i < strlen($bin); $i++) {
+        for ($i = 0; $i < strlen($bin); ++$i) {
             $ret[] = strtoupper(bin2hex(strval($bin[$i])));
         }
         if ($out) {
             echo join(' ', $ret) . "\n";
         } else {
-            return join(' ', $ret);
+            return join($sperator, $ret);
         }
-    }
-
-    public static function bin2Bits(string $bin): string
-    {
-        $bin = $bin[0];
-        return str_pad(decbin(ord($bin)), 8, '0', STR_PAD_LEFT);
     }
 
     /**
-     * 判断平台是大端还是小端
-     * @return bool
+     * 判断平台是大端还是小端.
      */
     public static function isLE(): bool
     {
-        $bin = pack("s", 1);
+        $bin = pack('s', 1);
         if (bin2hex($bin[0]) != '00') {
             return true;
-        } else {
-            return false;
         }
-
+        return false;
     }
 
     // long 8位
-    public static function bin2Long($bin): int
+    public static function bin2Long(string $bin): int
     {
-        if (strlen($bin) != 8) {
-            return 0;
+        if (static::isLE()) {
+            $bin = strrev($bin);
         }
-        return
-            ((ord($bin[0]) & 0xff) << 56)
-            | ((ord($bin[1]) & 0xff) << 48)
-            | ((ord($bin[2]) & 0xff) << 40)
-            | ((ord($bin[3]) & 0xff) << 32)
-            | ((ord($bin[4]) & 0xff) << 24)
-            | ((ord($bin[5]) & 0xff) << 16)
-            | ((ord($bin[6]) & 0xff) << 8)
-            | ((ord($bin[7]) & 0xff) << 0);
+        $ret = unpack('q', $bin);
+        return $ret[1];
     }
 
     // 将long 转为 二进制
-    public static function long2Bin($long): string
+    public static function long2Bin(int $long): string
     {
-        $b = [];
-        $b[] = chr($long & 0xff);
-        $b[] = chr($long >> 8 & 0xff);
-        $b[] = chr($long >> 16 & 0xff);
-        $b[] = chr($long >> 24 & 0xff);
-        $b[] = chr($long >> 32 & 0xff);
-        $b[] = chr($long >> 40 & 0xff);
-        $b[] = chr($long >> 48 & 0xff);
-        $b[] = chr($long >> 56 & 0xff);
-        return join('', array_reverse($b));
+        $ret = pack('q', $num);
+        if (static::isLE()) {
+            return strrev($ret);
+        }
+        return $ret;
     }
 
-
-    public static function bin2LongLE($bin): int
+    public static function bin2LongLE(string $bin): int
     {
-        if (strlen($bin) != 8) {
-            return 0;
+        if (! static::isLE()) {
+            $bin = strrev($bin);
         }
-        return
-            ((ord($bin[0]) & 0xff) << 0)
-            | ((ord($bin[1]) & 0xff) << 8)
-            | ((ord($bin[2]) & 0xff) << 16)
-            | ((ord($bin[3]) & 0xff) << 24)
-            | ((ord($bin[4]) & 0xff) << 32)
-            | ((ord($bin[5]) & 0xff) << 40)
-            | ((ord($bin[6]) & 0xff) << 48)
-            | ((ord($bin[7]) & 0xff) << 56);
+        $ret = unpack('q', $bin);
+        return $ret[1];
     }
 
     // 将int 转为 二进制
-    public static function long2BinLE($long): string
+    public static function long2BinLE(int $long): string
     {
-        $b = [];
-        $b[] = chr($long & 0xff);
-        $b[] = chr($long >> 8 & 0xff);
-        $b[] = chr($long >> 16 & 0xff);
-        $b[] = chr($long >> 24 & 0xff);
-        $b[] = chr($long >> 32 & 0xff);
-        $b[] = chr($long >> 40 & 0xff);
-        $b[] = chr($long >> 48 & 0xff);
-        $b[] = chr($long >> 56 & 0xff);
-        return join('', $b);
+        $ret = pack('q', $long);
+        if (static::isLE()) {
+            return $ret;
+        }
+        return strrev($ret);
     }
-
 
     // 二进制 转 int
     // bin 代表二进制
     // 如果 转 int 那么bin的长度应该是4位
-    public static function bin2Int($bin)
+    public static function bin2Int(string $bin): int
     {
-        if (strlen($bin) != 4) {
-            return 0;
+        if (static::isLE()) {
+            $bin = strrev($bin);
         }
-        $ret = unpack("N*", $bin);
-        return $ret[1] ?? 0;
+        $ret = unpack('i', $bin);
+        return $ret[1];
     }
 
     // 将int 转为 二进制
-    public static function int2Bin($int)
+    public static function int2Bin(int $int): string
     {
-        return pack('N', $int);
+        $ret = pack('i', $int);
+        if (static::isLE()) {
+            return strrev($ret);
+        }
+        return $ret;
     }
 
-    public static function bin2IntLE($bin)
+    public static function bin2IntLE(string $bin): int
     {
-        if (strlen($bin) != 4) {
-            return 0;
+        if (! static::isLE()) {
+            $bin = strrev($bin);
         }
-        $ret = unpack("V*", $bin);
-        return $ret[1] ?? 0;
+        $ret = unpack('i', $bin);
+        return $ret[1];
     }
 
     // 将int 转为 二进制
-    public static function int2BinLE($int)
+    public static function int2BinLE(int $int): string
     {
-        return pack('V', $int);
+        $ret = pack('i', $int);
+        if (static::isLE()) {
+            return $ret;
+        }
+        return strrev($ret);
     }
 
     // short 2位
 
-    public static function bin2Short($bin)
+    public static function bin2Short(string $bin): int
     {
-        if (strlen($bin) != 2) {
-            return 0;
+        if (static::isLE()) {
+            $bin = strrev($bin);
         }
-        $ret = unpack("n*", $bin);
-        return $ret[1] ?? 0;
+        $ret = unpack('s', $bin);
+        return $ret[1];
     }
 
     // 将int 转为 二进制
-    public static function short2Bin($short)
+    public static function short2Bin(int $short): string
     {
-        return pack('n', $short);
+        $ret = pack('s', $short);
+        if (static::isLE()) {
+            return strrev($ret);
+        }
+        return $ret;
     }
 
-    public static function bin2ShortLE($bin)
+    public static function bin2ShortLE(string $bin): int
     {
-        if (strlen($bin) != 2) {
-            return 0;
+        if (! static::isLE()) {
+            $bin = strrev($bin);
         }
-        $ret = unpack("v*", $bin);
-        return $ret[1] ?? 0;
+        $ret = unpack('s', $bin);
+        return $ret[1];
     }
 
     // 将int 转为 二进制
-    public static function short2BinLE($short)
+    public static function short2BinLE(int $short): string
     {
-        return pack('v', $short);
+        $ret = pack('s', $short);
+        if (static::isLE()) {
+            return $ret;
+        }
+        return strrev($ret);
     }
 
     // float
-    public static function bin2Float($bin)
+    public static function bin2Float(string $bin): float
     {
         if (static::isLE()) {
             $bin = strrev($bin);
         }
-        $ret = unpack('f*', $bin);
-        return $ret[1] ?? 0;
+        $ret = unpack('f', $bin);
+        return $ret[1];
     }
 
-
-    public static function float2Bin($float)
+    public static function float2Bin(float $float): string
     {
         $bin = pack('f', $float);
         if (static::isLE()) {
             return strrev($bin);
-        } else {
-            return $bin;
         }
+        return $bin;
     }
 
-    public static function bin2FloatLE($bin)
+    public static function bin2FloatLE(string $bin): float
     {
-        if (!static::isLE()) {
+        if (! static::isLE()) {
             $bin = strrev($bin);
         }
-        $ret = unpack('f*', $bin);
-        return $ret[1] ?? 0;
+        $ret = unpack('f', $bin);
+        return $ret[1];
     }
 
-    public static function float2BinLE($float)
+    public static function float2BinLE(float $float): string
     {
         $bin = pack('f', $float);
         if (static::isLE()) {
             return $bin;
-        } else {
-            return strrev($bin);
         }
+        return strrev($bin);
+    }
+
+    /**
+     * 双精度 转 bin.
+     */
+    public static function double2Bin(float $double): string
+    {
+        $ret = pack('d', $double);
+        if (static::isLE()) {
+            return strrev($ret);
+        }
+        return $ret;
+    }
+
+    /**
+     * 双精度 转 bin 小端.
+     */
+    public static function double2BinLE(float $double): string
+    {
+        $ret = pack('d', $double);
+        if (static::isLE()) {
+            return $ret;
+        }
+        return strrev($ret);
+    }
+
+    /**
+     * bin 转 双精度.
+     * @param mixed $bin
+     */
+    public static function bin2Double(string $bin): float
+    {
+        if (static::isLE()) {
+            $bin = strrev($bin);
+        }
+        $ret = unpack('d', $bin);
+        return $ret[1];
+    }
+
+    /**
+     * bin 转 双精度.
+     * @param mixed $bin
+     */
+    public static function bin2DoubleLE(string $bin): float
+    {
+        if (! static::isLE()) {
+            $bin = strrev($bin);
+        }
+        $ret = unpack('d', $bin);
+        return $ret[1];
     }
 }
