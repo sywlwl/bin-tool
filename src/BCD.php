@@ -43,6 +43,7 @@ class BCD
      */
     public static function bcd2Bin($bcd, int $pad = 0): string
     {
+        $bcd = str_replace(' ', '', $bcd);
         // 如果不够偶数，补0
         if (strlen($bcd) > 0 && strlen($bcd) % 2 != 0) {
             $bcd .= '0';

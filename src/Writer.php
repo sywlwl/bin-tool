@@ -43,6 +43,14 @@ class Writer
         return $this;
     }
 
+    public function writeBCD(string $bcd): Writer
+    {
+        $bin = BCD::bcd2Bin($bcd);
+        $this->bin .= $bin;
+        $this->index += strlen($bin);
+        return $this;
+    }
+
     public function writeBin(string $bin): Writer
     {
         $this->bin .= $bin;
